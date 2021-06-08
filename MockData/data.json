@@ -1,0 +1,94 @@
+{
+  "Groups": [
+    {
+      "Name": "Silver",
+      "Amount": 3
+    },
+    {
+      "Name": "Gold",
+      "Amount": 33
+    },
+    {
+      "Name": "Platinum",
+      "Amount": 333
+    }
+  ],
+  "Spesifications": [
+    { "Name": "Spesification1" },
+    { "Name": "Spesification2" },
+    { "Name": "Spesification3" },
+    { "Name": "Spesification4" },
+    { "Name": "Spesification5" },
+    { "Name": "Spesification6" },
+    { "Name": "Spesification7" },
+    { "Name": "Spesification8" },
+    { "Name": "Spesification9" },
+    { "Name": "Spesification10" },
+    { "Name": "Spesification11" }
+  ],
+  "Services": [
+    {
+      "Name": "Service1",
+      "StartsAt": "2021-05-05",
+      "Type": 1,
+      "ValidTill": "2032-05-05"
+    },
+    {
+      "Name": "Service2",
+      "StartsAt": "2021-04-04",
+      "Type": 2,
+      "ValidTill": "2034-04-04"
+    },
+    {
+      "Name": "Service3",
+      "StartsAt": "2021-03-03",
+      "Type": 3,
+      "ValidTill": "2033-03-03"
+    },
+    {
+      "Name": "Service4",
+      "StartsAt": "2021-05-05",
+      "Type": 2,
+      "ValidTill": "2042-05-05"
+    },
+    {
+      "Name": "Service5",
+      "StartsAt": "2021-05-05",
+      "Type": 1,
+      "ValidTill": "2035-05-05"
+    },
+    {
+      "Name": "Service6",
+      "StartsAt": "2021-06-06",
+      "Type": 3,
+      "ValidTill": "2036-06-06"
+    },
+    {
+      "Name": "Service7",
+      "StartsAt": "2021-07-05",
+      "Type": 2,
+      "ValidTill": "2037-05-07"
+    },
+    {
+      "Name": "Service8",
+      "StartsAt": "2021-05-08",
+      "Type": 1,
+      "ValidTill": "2032-08-05"
+    }
+  ],
+  "ServiceSpesifications": {
+    "Service1": [ "Spesification2", "Spesification4", "Spesification6", "Spesification8", "Spesification10" ],
+    "Service2": [ "Spesification1", "Spesification3", "Spesification5", "Spesification7", "Spesification9" ],
+    "Service3": [ "Spesification1", "Spesification4", "Spesification6" ],
+    "Service4": [ "Spesification2", "Spesification3", "Spesification4", "Spesification5", "Spesification9" ],
+    "Service5": [ "Spesification8", "Spesification9", "Spesification10" ],
+    "Service6": [ "Spesification1", "Spesification7", "Spesification9" ],
+    "Service7": [ "Spesification5", "Spesification8", "Spesification6" ],
+    "Service8": [ "Spesification2", "Spesification3" ]
+  },
+  "GroupServices": {
+     "Silver": [ "Service1", "Service2", "Service8", "Service3", "Service9", "Service5", "Service10" ],
+     "Gold": [ "Service10", "Service2", "Service3", "Service6", "Service9", "Service5", "Service7" ],
+     "Platinum": [ "Service4", "Service5", "Service8", "Service6", "Service9", "Service2", "Service10" ]
+  }
+}
