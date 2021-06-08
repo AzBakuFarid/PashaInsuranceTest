@@ -3,8 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using PashaInsuranceTest.Data;
-using PashaInsuranceTest.DbEntities.Models;
 using PashaInsuranceTest.Helpers;
+using PashaInsuranceTest.Repository;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,23 +20,14 @@ namespace PashaInsuranceTest.Extensions
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                var context = services.GetService<AppDbContext>();
+                var repo = services.GetService<IBaseRepository>();
                 var env = services.GetService<IWebHostEnvironment>();
                 var filepath = Path.Combine(env.ContentRootPath, "MockData", "data.json");
                 var data = JsonConvert.DeserializeObject<MockDataWrapper>(File.ReadAllText(filepath));
-                DataSeeder.Seed(context);
+                DataSeeder.Seed(repo, data);
             }
             return host;
         }
     }
-    public class MockDataWrapper
-    {
-        public List<Group> Groups { get; set; }
-        public List<Service> Services { get; set; }
-        public List<Spesification> Spesifications { get; set; }
-        public Dictionary<string, string[]> ServiceSpesifications { get; set; }
-        public Dictionary<string, string[]> GroupServices { get; set; }
 
-
-    }
 }

@@ -18,14 +18,12 @@ namespace PashaInsuranceTest.Repository
             if (model != null)
             {
                 _dbContext.Set<TDbEntity>().Add(model);
-                _dbContext.SaveChanges();
             }
         }
         public virtual void Update<TDbEntity>(TDbEntity model) where TDbEntity : class
         {
             var entity = _dbContext.Set<TDbEntity>().Attach(model);
             entity.State = EntityState.Modified;
-            _dbContext.SaveChanges();
         }
 
         public virtual List<TDbEntity> List<TDbEntity>() where TDbEntity : class
@@ -36,6 +34,14 @@ namespace PashaInsuranceTest.Repository
         {
             return (TDbEntity) _dbContext.Find(typeof(TDbEntity), id);
         }
+        public TDbEntity LoadRelations<TDbEntity, TId>(TId id, string relation) where TDbEntity : class
+        {
+            return (TDbEntity)_dbContext.Find(typeof(TDbEntity), id);
+        }
+        public void Commit()
+        {
+            _dbContext.SaveChanges();
+        }
     }
     ///////////////////////////////////////////////////////////////////////////////////////////// 
     public interface IBaseRepository
@@ -44,5 +50,6 @@ namespace PashaInsuranceTest.Repository
         void Update<TDbEntity>(TDbEntity model) where TDbEntity : class;
         TDbEntity Find<TDbEntity, TId>(TId id) where TDbEntity : class;
         List<TDbEntity> List<TDbEntity>() where TDbEntity : class;
+        void Commit();
     }
 }

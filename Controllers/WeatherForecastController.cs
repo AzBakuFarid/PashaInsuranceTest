@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using PashaInsuranceTest.Data;
 using PashaInsuranceTest.DbEntities.Models;
 using PashaInsuranceTest.Repository;
 
@@ -12,21 +14,23 @@ namespace PashaInsuranceTest.Controllers
     [ApiController]
     public class WeatherForecastController : ControllerBase
     {
-        private readonly IBaseRepository repo;
+        private readonly IBaseRepository _repo;
+        private readonly AppDbContext _dbContext;
 
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(IBaseRepository _repo)
+        public WeatherForecastController(IBaseRepository repo, AppDbContext dbContext)
         {
-            repo = _repo;
+            _repo = repo;
+            _dbContext = dbContext;
         }
 
         [HttpGet]
         [Route("home/index")]
         public ActionResult<IEnumerable<string>> Get()
         {
-            var result = repo.List<Group>();
-            return Ok(result.Select(s => s.Name));
+            var groups = _dbContext.groups.Include("Services.Spesifications").ToList(); ;
+            return Ok();
         }
     }
 }
