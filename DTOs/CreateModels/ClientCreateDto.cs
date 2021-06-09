@@ -1,11 +1,12 @@
-﻿using System;
+﻿using PashaInsuranceTest.DTOs.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace PashaInsuranceTest.DTOs.CreateModels
 {
-    public class ClientCreateDto
+    public class ClientCreateDto : IClientCreateData
     {
         public string Name { get; set; }
         public string Surname { get; set; }

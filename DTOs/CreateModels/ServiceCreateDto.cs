@@ -1,5 +1,6 @@
 ﻿using PashaInsuranceTest.DbEntities.Enums;
 using PashaInsuranceTest.DTOs.Enums;
+using PashaInsuranceTest.DTOs.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PashaInsuranceTest.DTOs.CreateModels
 {
-    public class ServiceCreateDto
+    public class ServiceCreateDto : IServiceCreateData
     {
         public string Name { get; set; }
         public DateTime StartsAt { get; set; }

@@ -1,12 +1,10 @@
 ﻿using PashaInsuranceTest.DTOs.Enums;
+using PashaInsuranceTest.DTOs.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PashaInsuranceTest.DTOs.UpdateModels
 {
-    public class ServiceUpdateDto
+    public class ServiceUpdateDto : IServiceUpdateData
     {
         public int Id { get; set; }
         public string Name { get; set; }
