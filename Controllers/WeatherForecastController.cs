@@ -30,6 +30,8 @@ namespace PashaInsuranceTest.Controllers
         public ActionResult<IEnumerable<string>> Get()
         {
             var groups = _dbContext.groups.Include("Services.Spesifications").ToList(); ;
+            var services = _dbContext.services.Include("Spesifications").ToList(); ;
+            var spesi = _dbContext.spesifications.ToList(); ;
             return Ok();
         }
     }

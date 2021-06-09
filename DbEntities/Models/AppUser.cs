@@ -11,7 +11,6 @@ namespace PashaInsuranceTest.DbEntities.Models
     {
         public int? GroupId { get; set; }
         public virtual Group Group { get; set; }
-
-        [NotMapped] public bool IsClient => GroupId.HasValue;  
-    }
+        public bool IsClient { get; set; }
+}
 }

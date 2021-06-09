@@ -1,4 +1,5 @@
 ﻿using PashaInsuranceTest.DbEntities.Enums;
+using PashaInsuranceTest.DbEntities.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PashaInsuranceTest.DbEntities.Models
 {
-    public class Service
+    public class Service : IDbGenericLookup<int>
     {
         public int Id { get; set; }
         public string Name { get; set; }

@@ -1,11 +1,12 @@
-﻿using System;
+﻿using PashaInsuranceTest.DbEntities.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace PashaInsuranceTest.DbEntities.Models
 {
-    public class Spesification
+    public class Spesification : IDbGenericLookup<int>
     {
         public int Id { get; set; }
         public string Name { get; set; }

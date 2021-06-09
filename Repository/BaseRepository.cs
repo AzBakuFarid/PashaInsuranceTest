@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PashaInsuranceTest.Data;
+using PashaInsuranceTest.DbEntities.Interfaces;
+using PashaInsuranceTest.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -30,26 +32,43 @@ namespace PashaInsuranceTest.Repository
         {
             return _dbContext.Set<TDbEntity>().ToList();
         }
-        public TDbEntity Find<TDbEntity, TId>(TId id) where TDbEntity : class
+        public virtual TDbEntity Find<TDbEntity, TKeyType>(TKeyType id, params string[] relations) where TDbEntity : class, IKey<TKeyType>
         {
-            return (TDbEntity) _dbContext.Find(typeof(TDbEntity), id);
+            var dbSet = _dbContext.Set<TDbEntity>();
+            var query = ((IQueryable<TDbEntity>)dbSet).AddInclude(relations);
+
+            return query.FirstOrDefault(f => f.Id.Equals(id));
         }
-        public TDbEntity LoadRelations<TDbEntity, TId>(TId id, string relation) where TDbEntity : class
+        public virtual void Delete<TDbEntity>(TDbEntity entity) where TDbEntity : class
         {
-            return (TDbEntity)_dbContext.Find(typeof(TDbEntity), id);
+            _dbContext.Remove(entity);
         }
         public void Commit()
         {
             _dbContext.SaveChanges();
         }
+        public virtual TDbEntity FindByName<TDbEntity>(string name, params string[] relations) where TDbEntity : class, IName
+        {
+            var dbSet = _dbContext.Set<TDbEntity>();
+            var query = ((IQueryable<TDbEntity>)dbSet).AddInclude(relations);
+            return query.FirstOrDefault(f => f.Name.Equals(name));
+        }
+        public virtual List<TDbEntity> ListByIds<TDbEntity, TKeyType>(IEnumerable<TKeyType> idList) where TDbEntity : class, IKey<TKeyType>
+        {
+            return _dbContext.Set<TDbEntity>().Where(w => idList.Contains(w.Id)).ToList();
+        }
+
     }
     ///////////////////////////////////////////////////////////////////////////////////////////// 
     public interface IBaseRepository
     {
         void Create<TDbEntity>(TDbEntity model) where TDbEntity : class;
         void Update<TDbEntity>(TDbEntity model) where TDbEntity : class;
-        TDbEntity Find<TDbEntity, TId>(TId id) where TDbEntity : class;
+        TDbEntity Find<TDbEntity, TKeyType>(TKeyType id, params string[] relations) where TDbEntity : class, IKey<TKeyType>;
         List<TDbEntity> List<TDbEntity>() where TDbEntity : class;
+        TDbEntity FindByName<TDbEntity>(string name, params string[] relations) where TDbEntity : class, IName;
+        List<TDbEntity> ListByIds<TDbEntity, TKeyType>(IEnumerable<TKeyType> idList) where TDbEntity : class, IKey<TKeyType>;
+        void Delete<TDbEntity>(TDbEntity entity) where TDbEntity : class;
         void Commit();
     }
 }
