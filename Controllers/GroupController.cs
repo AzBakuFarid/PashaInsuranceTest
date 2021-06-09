@@ -15,12 +15,12 @@ namespace PashaInsuranceTest.Controllers
     public class GroupController: ControllerBase
     {
         private readonly IBaseRepository _repo;
-        private readonly UserManager<AppUser> _userManager;
+        private readonly IClientRepository _clientRepo;
 
-        public GroupController(IBaseRepository repo, UserManager<AppUser> userManager)
+        public GroupController(IBaseRepository repo, IClientRepository clientRepo)
         {
             _repo = repo;
-            this._userManager = userManager;
+            this._clientRepo = clientRepo;
         }
 
         [HttpPost]
@@ -29,18 +29,22 @@ namespace PashaInsuranceTest.Controllers
         {
             var oldGroup = _repo.FindByName<Group>(model.Name);
             if (oldGroup != null) {
-                return BadRequest(new { error = $"The group with name {model.Name} exists" });
+                return BadRequest(new { error = $"Group with name {model.Name} exists" });
             }
             var group = new Group {
                 Name = model.Name,
                 Amount = model.Amount
             };
+
             var services = _repo.ListByIds<Service, int>(model.Services);
-            var clients = _userManager.Users.Where(w => w.IsClient && model.Clients.Contains(w.Id));
             if (services.Any()) services.ForEach(s => group.Services.Add(s));
+
+            var clients = _clientRepo.ListByIds(model.Clients);
             if (clients.Any()) clients.ForEach(c => group.Clients.Add(c));
+
             _repo.Create(group);
             _repo.Commit();
+
             return Ok();
         }
 
@@ -60,15 +64,6 @@ namespace PashaInsuranceTest.Controllers
             }
             group.Name = model.Name;
             group.Amount = model.Amount;
-
-            group.Services.Clear();
-            group.Clients.Clear();
-
-            var services = _repo.ListByIds<Service, int>(model.Services);
-            var clients = _userManager.Users.Where(w => w.IsClient && model.Clients.Contains(w.Id));
-
-            if (services.Any()) services.ForEach(s => group.Services.Add(s));
-            if (clients.Any()) clients.ForEach(c => group.Clients.Add(c));
 
             _repo.Update(group);
             _repo.Commit();

@@ -15,24 +15,27 @@ namespace PashaInsuranceTest.Controllers
     public class WeatherForecastController : ControllerBase
     {
         private readonly IBaseRepository _repo;
+        private readonly IClientRepository _clientrepo; 
         private readonly AppDbContext _dbContext;
 
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(IBaseRepository repo, AppDbContext dbContext)
+        public WeatherForecastController(IBaseRepository repo, AppDbContext dbContext, IClientRepository clientrepo)
         {
             _repo = repo;
             _dbContext = dbContext;
+            _clientrepo = clientrepo;
         }
 
         [HttpGet]
         [Route("home/index")]
         public ActionResult<IEnumerable<string>> Get()
         {
-            var groups = _dbContext.groups.Include("Services.Spesifications").ToList(); ;
-            var services = _dbContext.services.Include("Spesifications").ToList(); ;
-            var spesi = _dbContext.spesifications.ToList(); ;
-            return Ok();
+            var users = _clientrepo.List();
+            var groups = _dbContext.groups.Include("Services.Spesifications").Include("Clients").ToList();
+            var services = _dbContext.services.Include("Spesifications").ToList();
+            var spesi = _dbContext.spesifications.ToList();
+            return Ok(users.Select(s => new {user = s.Id, group = s.Group?.Name ?? "bosdur" }));
         }
     }
 }

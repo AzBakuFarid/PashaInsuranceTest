@@ -9,6 +9,9 @@ namespace PashaInsuranceTest.DbEntities.Models
 {
     public class AppUser : IdentityUser
     {
+        public string Name { get; set; }
+        public string Surname { get; set; }
+        public DateTime? Birthday { get; set; }
         public int? GroupId { get; set; }
         public virtual Group Group { get; set; }
         public bool IsClient { get; set; }
