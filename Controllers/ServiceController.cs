@@ -1,14 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PashaInsuranceTest.DbEntities.Models;
 using PashaInsuranceTest.DTOs.CreateModels;
 using PashaInsuranceTest.DTOs.UpdateModels;
-using PashaInsuranceTest.Helpers;
-using PashaInsuranceTest.Repository;
 using PashaInsuranceTest.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace PashaInsuranceTest.Controllers
 {
