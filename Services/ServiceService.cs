@@ -1,12 +1,11 @@
 ﻿using PashaInsuranceTest.DbEntities.Models;
 using PashaInsuranceTest.DTOs.Interfaces;
+using PashaInsuranceTest.DTOs.ViewModels;
 using PashaInsuranceTest.Exceptions;
 using PashaInsuranceTest.Helpers;
 using PashaInsuranceTest.Repository;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace PashaInsuranceTest.Services
 {
@@ -17,7 +16,21 @@ namespace PashaInsuranceTest.Services
         {
             _baseRepo = baseRepo;
         }
-
+        public List<ServiceViewDto> List()
+        {
+            return _baseRepo.List<Service>("Groups", "Spesifications")
+                .Select(s => new ServiceViewDto
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    StartsAt = s.StartsAt.ToString("dd.MM.yyyy"),
+                    ValidTill = s.ValidTill.ToString("dd.MM.yyyy"),
+                    Type = s.Type.ToString(),
+                    Groups = s.Groups.Select(g => new InnerData<int> { Id = g.Id, Name = g.Name }).ToList(),
+                    Spesifications = s.Spesifications.Select(sp => new InnerData<int> { Id = sp.Id, Name = sp.Name }).ToList()
+                })
+                .ToList();
+        }
         public void AddToGroup(IAddToGroupData<int> data)
         {
             var service = GetService(data.TargetId);
@@ -111,5 +124,6 @@ namespace PashaInsuranceTest.Services
         void Delete(int id);
         void AddToGroup(IAddToGroupData<int> data);
         void RemoveFromGroup(IAddToGroupData<int> data);
+        List<ServiceViewDto> List();
     }
 }

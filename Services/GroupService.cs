@@ -1,7 +1,9 @@
 ﻿using PashaInsuranceTest.DbEntities.Models;
 using PashaInsuranceTest.DTOs.Interfaces;
+using PashaInsuranceTest.DTOs.ViewModels;
 using PashaInsuranceTest.Exceptions;
 using PashaInsuranceTest.Repository;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace PashaInsuranceTest.Services
@@ -45,6 +47,19 @@ namespace PashaInsuranceTest.Services
             _baseRepo.Commit();
         }
 
+        public List<GroupViewDto> List()
+        {
+            return _baseRepo.List<Group>("Services", "Clients")
+                .Select(g => new GroupViewDto {
+                    Id = g.Id,
+                    Name = g.Name,
+                    Amount = g.Amount,
+                    Clients = g.Clients.Select(c => new InnerData<string> { Id = c.Id, Name = c.Name }).ToList(),
+                    Services = g.Services.Select(s => new InnerData<int> { Id = s.Id, Name = s.Name }).ToList()
+                })
+                .ToList();
+        }
+
         public void Update(IGroupUpdateData data) {
             var group = GetGroup(data.Id);
             var groupWithNewName = _baseRepo.FindByName<Group>(data.Name);
@@ -67,5 +82,6 @@ namespace PashaInsuranceTest.Services
         void Create(IGroupCreateData data);
         void Update(IGroupUpdateData data);
         void Delete(int id);
+        List<GroupViewDto> List();
     }
 }

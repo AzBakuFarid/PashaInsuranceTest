@@ -16,6 +16,12 @@ namespace PashaInsuranceTest.Controllers
             this._service = service;
         }
 
+        [HttpGet]
+        [Route("[controller]/list")]
+        public IActionResult List()
+        {
+            return Ok(_service.List());
+        }
 
         [HttpPost]
         [Route("[controller]/create")]

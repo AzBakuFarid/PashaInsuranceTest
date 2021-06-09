@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using PashaInsuranceTest.DbEntities.Models;
 using PashaInsuranceTest.DTOs.Interfaces;
+using PashaInsuranceTest.DTOs.ViewModels;
 using PashaInsuranceTest.Exceptions;
 using PashaInsuranceTest.Repository;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace PashaInsuranceTest.Services
@@ -82,6 +84,20 @@ namespace PashaInsuranceTest.Services
             ExecuteFunction(() => _clientRepo.Update(client));
 
         }
+
+        public List<ClientViewDto> List()
+        {
+            return _clientRepo.List()
+                .Select(c => new ClientViewDto {
+                    Birthday = c.Birthday?.ToString("dd.MM.yyyy") ?? "qeyd olunmayib",
+                    Email = c.Email,
+                    Id = c.Id,
+                    Name = c.Name,
+                    Surname = c.Surname, 
+                    Group = c.Group == null ? null : new InnerData<int> { Name = c.Group.Name, Id = c.Group.Id }
+                })
+                .ToList();
+        }
         private AppUser GetClient(string clientId) {
             return _clientRepo.Find(clientId) ?? throw new NotFoundException($"Client by id {clientId} does not exists");
         }
@@ -101,5 +117,6 @@ namespace PashaInsuranceTest.Services
         void Delete(string id);
         void AddToGroup(IAddToGroupData<string> data);
         void RemoveFromGroup(IAddToGroupData<string> data);
+        List<ClientViewDto> List();
     }
 }

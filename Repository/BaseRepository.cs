@@ -28,9 +28,12 @@ namespace PashaInsuranceTest.Repository
             entity.State = EntityState.Modified;
         }
 
-        public virtual List<TDbEntity> List<TDbEntity>() where TDbEntity : class
+        public virtual List<TDbEntity> List<TDbEntity>(params string[] relations) where TDbEntity : class
         {
-            return _dbContext.Set<TDbEntity>().ToList();
+            var dbSet = _dbContext.Set<TDbEntity>();
+            var query = ((IQueryable<TDbEntity>)dbSet).AddInclude(relations);
+
+            return query.ToList();
         }
         public virtual TDbEntity Find<TDbEntity, TKeyType>(TKeyType id, params string[] relations) where TDbEntity : class, IKey<TKeyType>
         {
@@ -65,7 +68,7 @@ namespace PashaInsuranceTest.Repository
         void Create<TDbEntity>(TDbEntity model) where TDbEntity : class;
         void Update<TDbEntity>(TDbEntity model) where TDbEntity : class;
         TDbEntity Find<TDbEntity, TKeyType>(TKeyType id, params string[] relations) where TDbEntity : class, IKey<TKeyType>;
-        List<TDbEntity> List<TDbEntity>() where TDbEntity : class;
+        List<TDbEntity> List<TDbEntity>(params string[] relations) where TDbEntity : class;
         TDbEntity FindByName<TDbEntity>(string name, params string[] relations) where TDbEntity : class, IName;
         List<TDbEntity> ListByIds<TDbEntity, TKeyType>(IEnumerable<TKeyType> idList) where TDbEntity : class, IKey<TKeyType>;
         void Delete<TDbEntity>(TDbEntity entity) where TDbEntity : class;
