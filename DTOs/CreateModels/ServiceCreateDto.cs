@@ -4,16 +4,16 @@ using PashaInsuranceTest.DTOs.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace PashaInsuranceTest.DTOs.CreateModels
 {
     public class ServiceCreateDto : IServiceCreateData
     {
-        public string Name { get; set; }
-        public DateTime StartsAt { get; set; }
-        public DateTime ValidTill { get; set; }
-        public ServiceTypeRequestEnum Type { get; set; }
+        [Required] [MaxLength(255)] public string Name { get; set; }
+        [DataType(DataType.Date)] public DateTime StartsAt { get; set; }
+        [DataType(DataType.Date)] public DateTime ValidTill { get; set; }
+        [EnumDataType(typeof(ServiceTypeRequestEnum))] public ServiceTypeRequestEnum Type { get; set; }
 
         public List<int> Groups { get; set; }
         public List<int> Spesifications { get; set; }

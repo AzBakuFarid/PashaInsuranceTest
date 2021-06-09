@@ -41,6 +41,8 @@ namespace PashaInsuranceTest
             services.AddScoped<IBaseRepository, BaseRepository>();
             services.AddScoped<IClientRepository, ClientRepository>();
             services.AddScoped<IGroupService, GroupService>();
+            services.AddScoped<IServiceService, ServiceService>();
+            services.AddScoped<IClientRepository, ClientRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

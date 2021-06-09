@@ -2,10 +2,7 @@
 using PashaInsuranceTest.DTOs.Interfaces;
 using PashaInsuranceTest.Exceptions;
 using PashaInsuranceTest.Repository;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace PashaInsuranceTest.Services
 {
@@ -20,8 +17,8 @@ namespace PashaInsuranceTest.Services
         }
 
         public void Create(IGroupCreateData data) {
-            var oldGroup = _baseRepo.FindByName<Group>(data.Name);
-            if (oldGroup != null)
+            var isGroupExists = _baseRepo.FindByName<Group>(data.Name) != null;
+            if (isGroupExists)
             {
                 throw new BadRequestException($"Group with name {data.Name} exists");
             }
@@ -40,9 +37,35 @@ namespace PashaInsuranceTest.Services
             _baseRepo.Create(group);
             _baseRepo.Commit();
         }
+
+        public void Delete(int id)
+        {
+            var group = GetGroup(id);
+            _baseRepo.Delete(group);
+            _baseRepo.Commit();
+        }
+
+        public void Update(IGroupUpdateData data) {
+            var group = GetGroup(data.Id);
+            var groupWithNewName = _baseRepo.FindByName<Group>(data.Name);
+            if (groupWithNewName != null && groupWithNewName.Id != data.Id)
+            {
+                throw new BadRequestException($"Group with name {data.Name} exists");
+            }
+            group.Name = data.Name;
+            group.Amount = data.Amount;
+
+            _baseRepo.Update(group);
+            _baseRepo.Commit();
+        }
+        private Group GetGroup(int id) {
+            return _baseRepo.Find<Group, int>(id) ?? throw new NotFoundException($"Group by id {id} does not exists");
+        }
     }
     ///////////////////////////////////////////////////////////////////// 
     public interface IGroupService {
         void Create(IGroupCreateData data);
+        void Update(IGroupUpdateData data);
+        void Delete(int id);
     }
 }

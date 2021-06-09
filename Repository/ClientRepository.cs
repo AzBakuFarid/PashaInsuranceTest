@@ -48,12 +48,21 @@ namespace PashaInsuranceTest.Repository
             if (string.IsNullOrEmpty(id?.Trim())) return null; // optimizasiya
             return _userManager.Users.Include(i => i.Group).FirstOrDefault(w => w.Id.Equals(id));
         }
+        public IdentityResult Delete(AppUser user)
+        {
+            if (user.IsClient)
+            {
+                return _userManager.DeleteAsync(user).Result;
+            }
+            return IdentityResult.Failed(new IdentityError { Description = "User that is not client could not be deleted via this service" });
+        }
     }
     ///////////////////////////////////////////////////////////////////////////////// 
     public interface IClientRepository
     {
         IdentityResult Create(AppUser userData, string password);
         IdentityResult Update(AppUser userData);
+        IdentityResult Delete(AppUser user);
         List<AppUser> ListForGroup(int groupId);
         List<AppUser> ListByIds(IEnumerable<string> idList);
         List<AppUser> List();

@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using PashaInsuranceTest.DTOs.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace PashaInsuranceTest.DTOs.UpdateModels
 {
-    public class AddClientToGroupDto
+    public class AddClientToGroupDto : IAddToGroupData<string>
     {
-        public string Client { get; set; }
-        public int Group { get; set; }
+        [Required] public string TargetId { get; set; } 
+        [Range(1, int.MaxValue)] public int GroupId { get; set; }
     }
 }
