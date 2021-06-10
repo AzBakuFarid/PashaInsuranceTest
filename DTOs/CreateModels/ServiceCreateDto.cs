@@ -5,15 +5,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel.DataAnnotations;
+using PashaInsuranceTest.Helpers;
 
 namespace PashaInsuranceTest.DTOs.CreateModels
 {
     public class ServiceCreateDto : IServiceCreateData
     {
         [Required] [MaxLength(255)] public string Name { get; set; }
-        [DataType(DataType.Date)] public DateTime StartsAt { get; set; }
-        [DataType(DataType.Date)] public DateTime ValidTill { get; set; }
-        [EnumDataType(typeof(ServiceTypeRequestEnum))] public ServiceTypeRequestEnum Type { get; set; }
+        public DateTime StartsAt { get; set; }
+        public DateTime ValidTill { get; set; }
+        [EnumDataType(typeof(ServiceTypeRequestEnum), ErrorMessage = ErrorMessage.AttributeError.INCORRECT_CHOISE)] public ServiceTypeRequestEnum Type { get; set; }
 
         public List<int> Groups { get; set; }
         public List<int> Spesifications { get; set; }

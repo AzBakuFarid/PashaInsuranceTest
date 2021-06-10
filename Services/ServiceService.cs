@@ -26,7 +26,7 @@ namespace PashaInsuranceTest.Services
             var group = _baseRepo.Find<Group, int>(data.GroupId);
             if (group == null)
             {
-                throw new BadRequestException($"Group by id {data.GroupId} does not exists");
+                throw new BadRequestException(string.Format(ErrorMessage.DbLookup.DOES_NOT_EXIST_FOR_ID, nameof(Group), data.GroupId));
             }
             if (service.Groups.Contains(group))  // optimizasia ucun
             {
@@ -42,7 +42,7 @@ namespace PashaInsuranceTest.Services
             var isServiceExists = _baseRepo.FindByName<Service>(data.Name) != null;
             if (isServiceExists)
             {
-                throw new BadRequestException($"Service with name {data.Name} exists");
+                throw new BadRequestException(string.Format(ErrorMessage.DbLookup.EXISTS_WITH_NAME, nameof(Service), data.Name));
             }
             var service = new Service
             {
@@ -93,7 +93,7 @@ namespace PashaInsuranceTest.Services
 
             if (otherService.Id != service.Id)
             {
-                throw new BadRequestException($"Service with name {data.Name} exists");
+                throw new BadRequestException(string.Format(ErrorMessage.DbLookup.EXISTS_WITH_NAME, nameof(Service), data.Name));
             }
             service.Name = data.Name;
             service.StartsAt = data.StartsAt;
@@ -107,7 +107,7 @@ namespace PashaInsuranceTest.Services
         }
         private Service GetService(int id)
         {
-            return _baseRepo.Find<Service, int>(id, "Groups") ?? throw new NotFoundException($"Service by id {id} does not exists");
+            return _baseRepo.Find<Service, int>(id, "Groups") ?? throw new NotFoundException(string.Format(ErrorMessage.DbLookup.DOES_NOT_EXIST_FOR_ID, nameof(Service), id));
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////// 

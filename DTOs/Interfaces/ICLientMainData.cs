@@ -8,6 +8,6 @@ namespace PashaInsuranceTest.DTOs.Interfaces
         string Surname { get; set; }
         string Password { get; set; }
         string Email { get; set; }
-        DateTime Birthday { get; set; }
+        DateTime? Birthday { get; set; }
     }
 }

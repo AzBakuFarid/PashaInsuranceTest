@@ -34,7 +34,7 @@ namespace PashaInsuranceTest.Services
             };
             if (data.Group.HasValue)
             {
-                client.Group = _baseRepo.Find<Group, int>(data.Group.Value) ?? throw new BadRequestException($"Group by id {data.Group.Value} does not exists");
+                client.Group = _baseRepo.Find<Group, int>(data.Group.Value) ?? throw new BadRequestException(string.Format(ErrorMessage.DbLookup.DOES_NOT_EXIST_FOR_ID, nameof(Group), data.Group.Value));
             }
             ExecuteFunction(() => _clientRepo.Create(client, data.Password));
             return Mapper.MapClientToViewModel(client);
@@ -60,7 +60,7 @@ namespace PashaInsuranceTest.Services
 
         public void AddToGroup(IAddToGroupData<string> data) {
             var client = GetClient(data.TargetId);
-            var group = _baseRepo.Find<Group, int>(data.GroupId, "Clients") ?? throw new BadRequestException($"Group by id {data.GroupId} does not exists");
+            var group = _baseRepo.Find<Group, int>(data.GroupId, "Clients") ?? throw new BadRequestException(string.Format(ErrorMessage.DbLookup.DOES_NOT_EXIST_FOR_ID, nameof(Group), data.GroupId));
 
             if (group.Clients.Contains(client))  // optimizasia ucun
             {
@@ -74,7 +74,7 @@ namespace PashaInsuranceTest.Services
         public void RemoveFromGroup(IAddToGroupData<string> data)
         {
             var client = GetClient(data.TargetId);
-            var group = _baseRepo.Find<Group, int>(data.GroupId, "Clients") ?? throw new BadRequestException($"Group by id {data.GroupId} does not exists");
+            var group = _baseRepo.Find<Group, int>(data.GroupId, "Clients") ?? throw new BadRequestException(string.Format(ErrorMessage.DbLookup.DOES_NOT_EXIST_FOR_ID, nameof(Group), data.GroupId));
 
             if (client.Group == null || client.Group.Id != data.GroupId)
             {
@@ -93,7 +93,7 @@ namespace PashaInsuranceTest.Services
             return _clientRepo.List().Select(c => Mapper.MapClientToViewModel(c)).ToList();
         }
         private AppUser GetClient(string clientId) {
-            return _clientRepo.Find(clientId) ?? throw new NotFoundException($"Client by id {clientId} does not exists");
+            return _clientRepo.Find(clientId) ?? throw new NotFoundException(string.Format(ErrorMessage.DbLookup.DOES_NOT_EXIST_FOR_ID, "Client", clientId));
         }
         private void ExecuteFunction(Func<IdentityResult> method) {
             var result = method();

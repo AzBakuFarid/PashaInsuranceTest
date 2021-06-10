@@ -23,7 +23,7 @@ namespace PashaInsuranceTest.Services
             var isGroupExists = _baseRepo.FindByName<Group>(data.Name) != null;
             if (isGroupExists)
             {
-                throw new BadRequestException($"Group with name {data.Name} exists");
+                throw new BadRequestException(string.Format(ErrorMessage.DbLookup.EXISTS_WITH_NAME, nameof(Group), data.Name));
             }
             var group = new Group
             {
@@ -52,15 +52,6 @@ namespace PashaInsuranceTest.Services
         public List<GroupViewDto> List()
         {
             return _baseRepo.List<Group>("Services", "Clients").Select(c => Mapper.MapGroupToViewModel(c)).ToList();
-            //return _baseRepo.List<Group>("Services", "Clients")
-            //    .Select(g => new GroupViewDto {
-            //        Id = g.Id,
-            //        Name = g.Name,
-            //        Amount = g.Amount,
-            //        Clients = g.Clients.Select(c => new InnerData<string> { Id = c.Id, Name = c.Name }).ToList(),
-            //        Services = g.Services.Select(s => new InnerData<int> { Id = s.Id, Name = s.Name }).ToList()
-            //    })
-            //    .ToList();
         }
 
         public GroupViewDto Update(IGroupUpdateData data) {
@@ -68,7 +59,7 @@ namespace PashaInsuranceTest.Services
             var groupWithNewName = _baseRepo.FindByName<Group>(data.Name);
             if (groupWithNewName != null && groupWithNewName.Id != data.Id)
             {
-                throw new BadRequestException($"Group with name {data.Name} exists");
+                throw new BadRequestException(string.Format(ErrorMessage.DbLookup.EXISTS_WITH_NAME, nameof(Group), data.Name));
             }
             group.Name = data.Name;
             group.Amount = data.Amount;
@@ -79,7 +70,7 @@ namespace PashaInsuranceTest.Services
 
         }
         private Group GetGroup(int id) {
-            return _baseRepo.Find<Group, int>(id) ?? throw new NotFoundException($"Group by id {id} does not exists");
+            return _baseRepo.Find<Group, int>(id) ?? throw new NotFoundException(string.Format(ErrorMessage.DbLookup.DOES_NOT_EXIST_FOR_ID, nameof(Group), id));
         }
     }
     ///////////////////////////////////////////////////////////////////// 

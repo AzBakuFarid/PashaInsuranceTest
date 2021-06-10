@@ -37,7 +37,7 @@ namespace PashaInsuranceTest
 
             services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase(databaseName: "P_I_Test"));
             services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(); 
             services.AddScoped<IBaseRepository, BaseRepository>();
             services.AddScoped<IClientRepository, ClientRepository>();
             services.AddScoped<IGroupService, GroupService>();
