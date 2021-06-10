@@ -2,6 +2,7 @@
 using PashaInsuranceTest.DTOs.Interfaces;
 using PashaInsuranceTest.DTOs.ViewModels;
 using PashaInsuranceTest.Exceptions;
+using PashaInsuranceTest.Helpers;
 using PashaInsuranceTest.Repository;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace PashaInsuranceTest.Services
             _clientRepo = clientRepo;
         }
 
-        public void Create(IGroupCreateData data) {
+        public GroupViewDto Create(IGroupCreateData data) {
             var isGroupExists = _baseRepo.FindByName<Group>(data.Name) != null;
             if (isGroupExists)
             {
@@ -38,6 +39,7 @@ namespace PashaInsuranceTest.Services
 
             _baseRepo.Create(group);
             _baseRepo.Commit();
+            return Mapper.MapGroupToViewModel(group);
         }
 
         public void Delete(int id)
@@ -49,18 +51,19 @@ namespace PashaInsuranceTest.Services
 
         public List<GroupViewDto> List()
         {
-            return _baseRepo.List<Group>("Services", "Clients")
-                .Select(g => new GroupViewDto {
-                    Id = g.Id,
-                    Name = g.Name,
-                    Amount = g.Amount,
-                    Clients = g.Clients.Select(c => new InnerData<string> { Id = c.Id, Name = c.Name }).ToList(),
-                    Services = g.Services.Select(s => new InnerData<int> { Id = s.Id, Name = s.Name }).ToList()
-                })
-                .ToList();
+            return _baseRepo.List<Group>("Services", "Clients").Select(c => Mapper.MapGroupToViewModel(c)).ToList();
+            //return _baseRepo.List<Group>("Services", "Clients")
+            //    .Select(g => new GroupViewDto {
+            //        Id = g.Id,
+            //        Name = g.Name,
+            //        Amount = g.Amount,
+            //        Clients = g.Clients.Select(c => new InnerData<string> { Id = c.Id, Name = c.Name }).ToList(),
+            //        Services = g.Services.Select(s => new InnerData<int> { Id = s.Id, Name = s.Name }).ToList()
+            //    })
+            //    .ToList();
         }
 
-        public void Update(IGroupUpdateData data) {
+        public GroupViewDto Update(IGroupUpdateData data) {
             var group = GetGroup(data.Id);
             var groupWithNewName = _baseRepo.FindByName<Group>(data.Name);
             if (groupWithNewName != null && groupWithNewName.Id != data.Id)
@@ -72,6 +75,8 @@ namespace PashaInsuranceTest.Services
 
             _baseRepo.Update(group);
             _baseRepo.Commit();
+            return Mapper.MapGroupToViewModel(group);
+
         }
         private Group GetGroup(int id) {
             return _baseRepo.Find<Group, int>(id) ?? throw new NotFoundException($"Group by id {id} does not exists");
@@ -79,8 +84,8 @@ namespace PashaInsuranceTest.Services
     }
     ///////////////////////////////////////////////////////////////////// 
     public interface IGroupService {
-        void Create(IGroupCreateData data);
-        void Update(IGroupUpdateData data);
+        GroupViewDto Create(IGroupCreateData data);
+        GroupViewDto Update(IGroupUpdateData data);
         void Delete(int id);
         List<GroupViewDto> List();
     }

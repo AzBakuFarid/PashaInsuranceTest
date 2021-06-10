@@ -3,6 +3,7 @@ using PashaInsuranceTest.DbEntities.Models;
 using PashaInsuranceTest.DTOs.Interfaces;
 using PashaInsuranceTest.DTOs.ViewModels;
 using PashaInsuranceTest.Exceptions;
+using PashaInsuranceTest.Helpers;
 using PashaInsuranceTest.Repository;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace PashaInsuranceTest.Services
             _clientRepo = clientRepo;
         }
 
-        public void Create(IClientCreateData data)
+        public ClientViewDto Create(IClientCreateData data)
         {
             var client = new AppUser
             {
@@ -36,6 +37,7 @@ namespace PashaInsuranceTest.Services
                 client.Group = _baseRepo.Find<Group, int>(data.Group.Value) ?? throw new BadRequestException($"Group by id {data.Group.Value} does not exists");
             }
             ExecuteFunction(() => _clientRepo.Create(client, data.Password));
+            return Mapper.MapClientToViewModel(client);
         }
 
         public void Delete(string id)
@@ -44,15 +46,16 @@ namespace PashaInsuranceTest.Services
             ExecuteFunction(() => _clientRepo.Delete(client));
         }
 
-        public void Update(ICLientUpdateData data)
+        public ClientViewDto Update(ICLientUpdateData data)
         {
             var client = GetClient(data.Id);
 
             client.Name = data.Name;
-            client.Surname = data.Name;
+            client.Surname = data.Surname;
             client.Birthday = data.Birthday;
             client.Email = data.Email;
             ExecuteFunction(() => _clientRepo.Update(client));
+            return Mapper.MapClientToViewModel(client);
         }
 
         public void AddToGroup(IAddToGroupData<string> data) {
@@ -87,16 +90,7 @@ namespace PashaInsuranceTest.Services
 
         public List<ClientViewDto> List()
         {
-            return _clientRepo.List()
-                .Select(c => new ClientViewDto {
-                    Birthday = c.Birthday?.ToString("dd.MM.yyyy") ?? "qeyd olunmayib",
-                    Email = c.Email,
-                    Id = c.Id,
-                    Name = c.Name,
-                    Surname = c.Surname, 
-                    Group = c.Group == null ? null : new InnerData<int> { Name = c.Group.Name, Id = c.Group.Id }
-                })
-                .ToList();
+            return _clientRepo.List().Select(c => Mapper.MapClientToViewModel(c)).ToList();
         }
         private AppUser GetClient(string clientId) {
             return _clientRepo.Find(clientId) ?? throw new NotFoundException($"Client by id {clientId} does not exists");
@@ -112,8 +106,8 @@ namespace PashaInsuranceTest.Services
     ////////////////////////////////////////////////////////////////////////// 
     public interface IClientService
     {
-        void Create(IClientCreateData data);
-        void Update(ICLientUpdateData data);
+        ClientViewDto Create(IClientCreateData data);
+        ClientViewDto Update(ICLientUpdateData data);
         void Delete(string id);
         void AddToGroup(IAddToGroupData<string> data);
         void RemoveFromGroup(IAddToGroupData<string> data);

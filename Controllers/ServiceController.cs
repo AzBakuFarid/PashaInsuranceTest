@@ -27,18 +27,14 @@ namespace PashaInsuranceTest.Controllers
         [Route("[controller]/create")]
         public IActionResult Create(ServiceCreateDto model) 
         {
-            _service.Create(model);
-
-            return Ok(); 
+            return Ok(_service.Create(model)); 
         }
 
         [HttpPost]
-        [Route("[controller]/update/{id}")]
+        [Route("[controller]/update")]
         public IActionResult Update(ServiceUpdateDto model) 
         {
-            _service.Update(model);
-
-            return Ok();
+            return Ok(_service.Update(model));
         }
 
         [HttpPost]
@@ -64,7 +60,7 @@ namespace PashaInsuranceTest.Controllers
         {
             _service.Delete(id);
 
-            return Ok();
+            return NoContent();
         }
     }
 }

@@ -18,23 +18,12 @@ namespace PashaInsuranceTest.Services
         }
         public List<ServiceViewDto> List()
         {
-            return _baseRepo.List<Service>("Groups", "Spesifications")
-                .Select(s => new ServiceViewDto
-                {
-                    Id = s.Id,
-                    Name = s.Name,
-                    StartsAt = s.StartsAt.ToString("dd.MM.yyyy"),
-                    ValidTill = s.ValidTill.ToString("dd.MM.yyyy"),
-                    Type = s.Type.ToString(),
-                    Groups = s.Groups.Select(g => new InnerData<int> { Id = g.Id, Name = g.Name }).ToList(),
-                    Spesifications = s.Spesifications.Select(sp => new InnerData<int> { Id = sp.Id, Name = sp.Name }).ToList()
-                })
-                .ToList();
+            return _baseRepo.List<Service>("Groups", "Spesifications").Select(s => Mapper.MapServiceToViewModel(s)).ToList();
         }
         public void AddToGroup(IAddToGroupData<int> data)
         {
             var service = GetService(data.TargetId);
-            var group = service.Groups.FirstOrDefault(w => w.Id == data.GroupId);
+            var group = _baseRepo.Find<Group, int>(data.GroupId);
             if (group == null)
             {
                 throw new BadRequestException($"Group by id {data.GroupId} does not exists");
@@ -48,7 +37,7 @@ namespace PashaInsuranceTest.Services
             _baseRepo.Commit();
         }
 
-        public void Create(IServiceCreateData data)
+        public ServiceViewDto Create(IServiceCreateData data)
         {
             var isServiceExists = _baseRepo.FindByName<Service>(data.Name) != null;
             if (isServiceExists)
@@ -71,6 +60,8 @@ namespace PashaInsuranceTest.Services
 
             _baseRepo.Create(service);
             _baseRepo.Commit();
+            return Mapper.MapServiceToViewModel(service);
+
         }
 
         public void Delete(int id)
@@ -92,9 +83,10 @@ namespace PashaInsuranceTest.Services
             service.Groups.Remove(group);
             _baseRepo.Update(service);
             _baseRepo.Commit();
+
         }
 
-        public void Update(IServiceUpdateData data)
+        public ServiceViewDto Update(IServiceUpdateData data)
         {
             var service = GetService(data.Id);
             var otherService = _baseRepo.FindByName<Service>(data.Name);
@@ -110,6 +102,8 @@ namespace PashaInsuranceTest.Services
 
             _baseRepo.Update(service);
             _baseRepo.Commit();
+            return Mapper.MapServiceToViewModel(service);
+
         }
         private Service GetService(int id)
         {
@@ -119,8 +113,8 @@ namespace PashaInsuranceTest.Services
     ////////////////////////////////////////////////////////////////////////////////////// 
     public interface IServiceService
     {
-        void Create(IServiceCreateData data);
-        void Update(IServiceUpdateData data);
+        ServiceViewDto Create(IServiceCreateData data);
+        ServiceViewDto Update(IServiceUpdateData data);
         void Delete(int id);
         void AddToGroup(IAddToGroupData<int> data);
         void RemoveFromGroup(IAddToGroupData<int> data);

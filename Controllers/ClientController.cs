@@ -27,17 +27,14 @@ namespace PashaInsuranceTest.Controllers
         [Route("[controller]/create")]
         public IActionResult Create(ClientCreateDto model)
         {
-            _service.Create(model);
-
-            return Ok();
+            return Ok(_service.Create(model));
         }
 
         [HttpPost]
-        [Route("[controller]/update/{id}")]
+        [Route("[controller]/update")]
         public IActionResult Update(ClientUpdateDto model)
         {
-            _service.Update(model);
-            return Ok();
+            return Ok(_service.Update(model));
         }
 
         [HttpPost]
@@ -53,7 +50,6 @@ namespace PashaInsuranceTest.Controllers
         public IActionResult RemoveFromGroup(AddClientToGroupDto model)
         {
             _service.RemoveFromGroup(model);
-
             return Ok();
         }
 
@@ -63,7 +59,7 @@ namespace PashaInsuranceTest.Controllers
         {
             _service.Delete(id);
 
-            return Ok();
+            return NoContent();
         }
 
     }

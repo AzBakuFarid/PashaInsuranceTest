@@ -1,15 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using PashaInsuranceTest.DbEntities.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using PashaInsuranceTest.DTOs.CreateModels;
 using PashaInsuranceTest.DTOs.UpdateModels;
-using PashaInsuranceTest.Extensions;
-using PashaInsuranceTest.Repository;
 using PashaInsuranceTest.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace PashaInsuranceTest.Controllers
 {
@@ -34,18 +27,14 @@ namespace PashaInsuranceTest.Controllers
         [Route("[controller]/create")]
         public IActionResult Create(GroupCreateDto model)
         {
-            _service.Create(model);
-
-            return Ok();
+            return Ok(_service.Create(model));
         }
 
         [HttpPost]
-        [Route("[controller]/update/{id}")]
+        [Route("[controller]/update")]
         public IActionResult Update(GroupUpdateDto model)
         {
-            _service.Update(model);
-
-            return Ok();
+            return Ok(_service.Update(model));
         }
 
         [HttpPost]
@@ -54,7 +43,7 @@ namespace PashaInsuranceTest.Controllers
 
             _service.Delete(id);
 
-            return Ok();
+            return NoContent();
         }
     }
 }

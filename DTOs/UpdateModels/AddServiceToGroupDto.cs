@@ -5,7 +5,7 @@ namespace PashaInsuranceTest.DTOs.UpdateModels
 {
     public class AddServiceToGroupDto : IAddToGroupData<int>
     {
-        [Range(1, int.MaxValue)] public int TargetId { get; set; }
-        [Range(1, int.MaxValue)] public int GroupId { get; set; }
+        [Range(1, int.MaxValue, ErrorMessage = "Invalid primary key")] public int TargetId { get; set; }
+        [Range(1, int.MaxValue, ErrorMessage = "Invalid primary key")] public int GroupId { get; set; }
     }
 }
