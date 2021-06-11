@@ -73,7 +73,7 @@ namespace PashaInsuranceTest.Services
 
         public void RemoveFromGroup(IAddToGroupData<int> data)
         {
-            var service = GetService(data.TargetId);
+            var service = GetService(data.TargetId, "Groups");
             var group = service.Groups.FirstOrDefault(w => w.Id == data.GroupId);
             if (group == null)
             {
@@ -89,9 +89,9 @@ namespace PashaInsuranceTest.Services
         public ServiceViewDto Update(IServiceUpdateData data)
         {
             var service = GetService(data.Id);
-            var otherService = _baseRepo.FindByName<Service>(data.Name);
+            var serviceWithNewName = _baseRepo.FindByName<Service>(data.Name);
 
-            if (otherService.Id != service.Id)
+            if (serviceWithNewName != null && serviceWithNewName.Id != service.Id)
             {
                 throw new BadRequestException(string.Format(ErrorMessage.DbLookup.EXISTS_WITH_NAME, nameof(Service), data.Name));
             }
@@ -102,12 +102,13 @@ namespace PashaInsuranceTest.Services
 
             _baseRepo.Update(service);
             _baseRepo.Commit();
-            return Mapper.MapServiceToViewModel(service);
+
+            return Mapper.MapServiceToViewModel(GetService(service.Id, "Groups", "Spesifications"));
 
         }
-        private Service GetService(int id)
+        private Service GetService(int id, params string[] includes)
         {
-            return _baseRepo.Find<Service, int>(id, "Groups") ?? throw new NotFoundException(string.Format(ErrorMessage.DbLookup.DOES_NOT_EXIST_FOR_ID, nameof(Service), id));
+            return _baseRepo.Find<Service, int>(id, includes) ?? throw new NotFoundException(string.Format(ErrorMessage.DbLookup.DOES_NOT_EXIST_FOR_ID, nameof(Service), id));
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////// 

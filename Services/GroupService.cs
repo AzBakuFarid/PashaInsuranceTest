@@ -66,11 +66,11 @@ namespace PashaInsuranceTest.Services
 
             _baseRepo.Update(group);
             _baseRepo.Commit();
-            return Mapper.MapGroupToViewModel(group);
+            return Mapper.MapGroupToViewModel(GetGroup(group.Id, "Clients", "Services"));
 
         }
-        private Group GetGroup(int id) {
-            return _baseRepo.Find<Group, int>(id) ?? throw new NotFoundException(string.Format(ErrorMessage.DbLookup.DOES_NOT_EXIST_FOR_ID, nameof(Group), id));
+        private Group GetGroup(int id, params string[] includes) {
+            return _baseRepo.Find<Group, int>(id, includes) ?? throw new NotFoundException(string.Format(ErrorMessage.DbLookup.DOES_NOT_EXIST_FOR_ID, nameof(Group), id));
         }
     }
     ///////////////////////////////////////////////////////////////////// 
